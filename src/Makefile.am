@@ -39,7 +39,7 @@ sx: sx.py Makefile
 
 if HAVE_OBELISK
 corebin_PROGRAMS += \
-    sx-history sx-balance sx-fetch-block-header sx-fetch-transaction \
+    sx-history sx-balance sx-fetch-block-header sx-fetch-transaction sx-fetch-block \
     sx-fetch-last-height sx-validtx sx-sendtx-obelisk sx-wallet \
     sx-fetch-transaction-index sx-fetch-stealth sx-monitor
 
@@ -147,6 +147,9 @@ sx_fetch_last_height_LDADD = ${libbitcoin_LIBS} ${libwallet_LIBS} ${libobelisk_L
 
 sx_fetch_transaction_SOURCES = fetch-transaction.cpp config.cpp
 sx_fetch_transaction_LDADD = ${libbitcoin_LIBS} ${libwallet_LIBS} ${libobelisk_LIBS} 
+
+sx_fetch_block_SOURCES = fetch-block.cpp config.cpp
+sx_fetch_block_LDADD = ${libbitcoin_LIBS} ${libwallet_LIBS} ${libobelisk_LIBS} 
 
 sx_fetch_stealth_SOURCES = fetch-stealth.cpp config.cpp
 sx_fetch_stealth_LDADD = ${libbitcoin_LIBS} ${libwallet_LIBS} ${libobelisk_LIBS} 

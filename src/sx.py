@@ -395,6 +395,23 @@ EXAMPLE:
 """
 ),
 
+
+"fetch-block": (
+"BLOCKCHAIN QUERIES",
+"Fetch all tx-hashes in a block using a network connection to make requests against the obelisk load balancer backend.",
+
+"""\
+Fetch all tx-hashes in a block using a network connection to make requests against the obelisk load balancer backend.
+
+Usage: sx fetch-block HEIGHT
+
+EXAMPLE: 
+
+  $ sx fetch-block 12345 # fetches raw data
+\
+"""
+),
+
 "fetch-transaction-index": (
 "BLOCKCHAIN QUERIES",
 "Fetch block height and index in block of transaction.",
