@@ -27,6 +27,7 @@ void block_fetched(const std::error_code& ec,
 int main(int argc, char** argv)
 {
     std::string index_str;
+    size_t height = 0;
     if (argc == 2)
         index_str = argv[1];
     else
@@ -37,7 +38,15 @@ int main(int argc, char** argv)
     obelisk::fullnode_interface fullnode(pool, config["service"],
         config["client-certificate"], config["server-public-key"]);
 
-
+    try
+    {
+        height = boost::lexical_cast<size_t>(index_str);
+    }
+    catch (const boost::bad_lexical_cast&)
+    {
+        std::cerr << "fetch-block: Bad index provided." << std::endl;
+        return -1;
+    }
     fullnode.blockchain.fetch_block_header(height, block_fetched);
     while (!stopped)
     {
