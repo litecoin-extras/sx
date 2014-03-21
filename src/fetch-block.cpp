@@ -8,6 +8,8 @@ using std::placeholders::_1;
 using std::placeholders::_2;
 
 bool stopped = false;
+size_t height = 0;
+bool json_output = false;
 
 void block_fetched(const std::error_code& ec,
     const hash_digest_list& blk)
@@ -18,20 +20,56 @@ void block_fetched(const std::error_code& ec,
         stopped = true;
         return;
     }
-    data_chunk raw_blk(satoshi_raw_size(blk));
-    satoshi_save(blk, raw_blk.begin());
-    std::cout << raw_blk << std::endl;
+
+    if (json_output){
+        bool is_first = true;
+        std::cout << "{" << std::endl;
+        std::cout << "  \"block\": \"" << height << "\"," << std::endl;
+        std::cout << "  \"transactions\": [" << std::endl;
+        for (const hash_digest& row: blk){
+            std::cout << "    ";
+            if(is_first == false)
+                std::cout << ",";
+            if (is_first)
+                is_first = false;
+
+            std::cout <<"\"" << row << "\"" << std::endl;
+        }
+        std::cout << "  ]\n}" << std::endl;
+    }else{
+        std::cout << "block: " << height << std::endl;
+        for (const hash_digest& row: blk)
+            std::cout << " tx_hash: " <<  row << std::endl;
+    }
     stopped = true;
 }
 
 int main(int argc, char** argv)
 {
-    std::string index_str;
+    std::string index_str="0";
     size_t height = 0;
-    if (argc == 2)
-        index_str = argv[1];
-    else
-        index_str = read_stdin();
+
+    
+    for (size_t i = 1; i < argc; ++i)
+    {
+        const std::string arg = argv[i];
+        if (arg == "-j" || arg == "--json")
+        {
+            json_output = true;
+            continue;
+        }
+        else{
+            index_str = argv[i];
+        }
+
+    }
+
+    if (index_str == "0")
+    {
+       std::cerr << "Usage: sx fetch-block [-j] BLOCK-HEIGHT" << std::endl;
+       return -1;
+    }
+    
     config_map_type config;
     load_config(config);
     threadpool pool(1);
@@ -47,7 +85,7 @@ int main(int argc, char** argv)
         std::cerr << "fetch-block: Bad index provided." << std::endl;
         return -1;
     }
-    fullnode.blockchain.fetch_block_header(height, block_fetched);
+    fullnode.blockchain.fetch_block(height, block_fetched);
     while (!stopped)
     {
         fullnode.update();
