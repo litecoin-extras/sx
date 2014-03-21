@@ -47,7 +47,7 @@ void block_fetched(const std::error_code& ec,
 int main(int argc, char** argv)
 {
     std::string index_str="0";
-    size_t height = 0;
+   
 
     
     for (size_t i = 1; i < argc; ++i)
